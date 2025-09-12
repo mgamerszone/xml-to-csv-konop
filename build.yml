@@ -1,0 +1,41 @@
+name: Build CSV from XML
+
+on:
+  schedule:
+    - cron: "*/30 * * * *"   # co 30 min (zmień wg potrzeb)
+  workflow_dispatch: {}       # ręczne uruchomienie
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Run converter
+        env:
+          SOURCE_URL: ${{ secrets.SOURCE_URL }}
+          # Opcjonalnie, jeśli znasz nazwę powtarzalnego węzła:
+          # ITEM_TAG: product
+        run: |
+          python convert.py --out data/konopnysklep.csv
+
+      - name: Commit & push if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/konopnysklep.csv
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "update feed $(date -u +'%Y-%m-%d %H:%M:%S')"
+            git push
+          fi
