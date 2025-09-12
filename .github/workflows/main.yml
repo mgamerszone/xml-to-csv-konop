@@ -2,7 +2,7 @@ name: Build CSV from XML
 
 on:
   schedule:
-    - cron: "*/30 * * * *"   # co 30 min (zmień wg potrzeb)
+    - cron: "*/5 * * * *"   # co 30 min (zmień wg potrzeb)
   workflow_dispatch: {}       # ręczne uruchomienie
 
 permissions:
