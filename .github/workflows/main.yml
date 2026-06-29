@@ -6,8 +6,6 @@ on:
     paths:
       - 'convert.py'
       - '.github/workflows/main.yml'
-  schedule:
-    - cron: "*/30 * * * *"
 
 permissions:
   contents: write
